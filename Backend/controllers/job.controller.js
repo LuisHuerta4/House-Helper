@@ -29,8 +29,21 @@ export const createJob = async (req, res) => {
 }
 
 export const updateJob = async (req, res) => {
-    // To Do
+    const { id } = req.params;
+    const job = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+
+    try {
+        const updatedJob = await Job.findByIdAndUpdate(id, job, { new: true })
+        res.status(200).json({ success: true, data: updatedJob });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
 }
+
 
 export const deleteJob = async (req, res) => {
     // To Do
