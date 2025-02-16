@@ -87,5 +87,16 @@ export const updateJob = async (req, res) => {
 
 
 export const deleteJob = async (req, res) => {
-    // To Do
+    const {id} = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){//checks if the id is valid and sends error job not found if not
+        return res.status(404).json({success: false, message: 'Job not found'});
+    }
+    try{//find the job with the id and delete
+        await Job.findByIdAndDelete(id);
+        res.status(200).json({success: true, message: 'Job deleted successfully'});
+    }
+    catch(error){//if there is an error, report
+        console.log("Error deleting Job:", error.message);
+        res.status(500).json({success: false, message: 'Server Error'});
+    }
 }
