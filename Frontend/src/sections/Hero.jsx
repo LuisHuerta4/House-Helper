@@ -1,4 +1,5 @@
 import { Header } from "../assets/HomeImages";
+import {Link} from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -20,9 +21,11 @@ const Hero = () => {
             <button className="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded-lg shadow-lg font-semibold">
               Browse Categories
             </button>
-            <button className="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded-lg shadow-lg font-semibold">
-              Make Post
-            </button>
+            <Link to={"/create"}>
+              <button className="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded-lg shadow-lg font-semibold">
+                Make Post
+              </button>
+            </Link>
           </div>
         </div>
       </div>
