@@ -24,6 +24,35 @@ export const getAllJobs = async (req, res) => {
     }
 }
 
+export const getJobsByCategory = async (req, res) => {
+    const { category } = req.params; 
+
+    try {
+        const jobs = await Job.find({ category });
+
+        if (jobs.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No jobs found in this category",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Jobs in category: ${category} retrieved successfully`,
+            data: jobs,
+        });
+    } catch (error) {
+        console.error("Error fetching jobs by category:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to retrieve jobs by category",
+            error: error.message,
+        });
+    }
+};
+
+
 export const createJob = async (req, res) => {
     try {
         // Destructure the job data from the request body
@@ -84,7 +113,6 @@ export const updateJob = async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
     }
 }
-
 
 export const deleteJob = async (req, res) => {
     const {id} = req.params;
