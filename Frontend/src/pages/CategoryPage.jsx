@@ -56,6 +56,7 @@ function CategoryPage() {
                             description={job.description} 
                             price={job.price} 
                             location={job.location}
+                            images={job.images}
                         />
                     ))}
                 </div>

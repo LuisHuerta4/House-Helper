@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 export default function CreateJobPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -15,6 +16,7 @@ export default function CreateJobPage() {
   })
   const [imageFiles, setImageFiles] = useState([])
   const [previewUrls, setPreviewUrls] = useState([])
+  const navigate = useNavigate()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -26,54 +28,70 @@ export default function CreateJobPage() {
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files)
-      setImageFiles((prev) => [...prev, ...newFiles])
-
+      const newFiles = Array.from(e.target.files);
+      setImageFiles((prev) => [...prev, ...newFiles]);
+  
+      // Convert images to Base64
+      Promise.all(newFiles.map(fileToBase64)).then((base64Images) => {
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, ...base64Images],
+        }));
+      });
+  
       // Create preview URLs
-      const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file))
-      setPreviewUrls((prev) => [...prev, ...newPreviewUrls])
+      const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file));
+      setPreviewUrls((prev) => [...prev, ...newPreviewUrls]);
     }
-  }
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted");
-
+  
     setIsLoading(true);
-
+  
     try {
-      const uploadedImageUrls = imageFiles.map((file) => URL.createObjectURL(file));
-
       const jobData = {
         ...formData,
-        images: uploadedImageUrls,
-        poster: "user-id",  //todo might be needed if we have login later on.
+        poster: "user-id",  // TODO: Replace with actual user ID when authentication is added
       };
-
+  
       console.log("Sending job data to API:", jobData);
-
-      const response = await fetch("/api/jobs", {  // Adjust URL if needed
+  
+      const response = await fetch("/api/jobs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(jobData),
-      })
-
-      console.log("API response:", response); // Log the response
-
+      });
+  
+      console.log("API response:", response);
+  
       if (!response.ok) {
         throw new Error("Failed to create job");
       }
-
+  
       const responseData = await response.json();
-      console.log("Job created successfully:", responseData);
+      console.log("Job created successfully:", responseData);      
+      navigate("/"); // Navigate back to the homepage
     } catch (error) {
       console.error("Error creating job:", error);
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   return (
       <div className="flex justify-center items-center min-h-screen">
@@ -134,15 +152,20 @@ export default function CreateJobPage() {
                   <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">
                     Category
                   </label>
-                  <input
-                      id="category"
-                      name="category"
-                      type="text"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      required
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
+                  <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Pools">Pools</option>
+                    <option value="Foliage">Foliage</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Pets">Pets</option>
+                  </select>
                 </div>
               </div>
 

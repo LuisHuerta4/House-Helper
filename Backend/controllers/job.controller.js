@@ -4,25 +4,19 @@ import Job from "../models/job.model.js";
 // Each person completes 1 of the following:
 export const getAllJobs = async (req, res) => {
     try {
-        // Query the database to fetch all jobs
         const jobs = await Job.find();
 
-        // Return a success response with the fetched data
         res.status(200).json({
             success: true,
             message: "Jobs retrieved successfully",
             data: jobs,
         });
     } catch (error) {
-        // Handle errors and return a failure response
         console.error("Error fetching jobs:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to retrieve jobs",
-            error: error.message,
-        });
+        res.status(500).json({ success: false, message: "Failed to retrieve jobs", error: error.message });
     }
-}
+};
+
 
 export const getJobsByCategory = async (req, res) => {
     const { category } = req.params; 
@@ -55,48 +49,41 @@ export const getJobsByCategory = async (req, res) => {
 
 export const createJob = async (req, res) => {
     try {
-        // Destructure the job data from the request body
-        const { category, title, description, poster, price, images, location, status } = req.body
+        const { category, title, description, poster, price, images, location, status } = req.body;
 
-        // Validate that all fields are provided
+        // Validate input fields
         if (!category || !title || !description || !poster || !price || !images || !location || !status) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required", // Return a 400 Bad Request if any field is missing
-            })
+            return res.status(400).json({ success: false, message: "All fields are required" });
         }
 
-        // Create a new job document
+        // Ensure images are stored in an array
+        const imageArray = Array.isArray(images) ? images : [images];
+
+        // Create a new job
         const newJob = new Job({
             category,
             title,
             description,
             poster,
             price,
-            images,
+            images: imageArray, // Store Base64 images
             location,
             status,
-        })
+        });
 
-        // Save the new job to the database
         const savedJob = await newJob.save();
 
-        // Return a success response with the saved job data
         res.status(201).json({
             success: true,
             message: "Job created successfully",
             data: savedJob,
-        })
+        });
     } catch (error) {
-        // Catch any errors and return a failure response
         console.error("Error creating job:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to create job",
-            error: error.message,
-        })
+        res.status(500).json({ success: false, message: "Failed to create job", error: error.message });
     }
-}
+};
+
 
 export const updateJob = async (req, res) => {
     const { id } = req.params;
