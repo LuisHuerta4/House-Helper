@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 export default function CreateJobPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -15,6 +16,7 @@ export default function CreateJobPage() {
   })
   const [imageFiles, setImageFiles] = useState([])
   const [previewUrls, setPreviewUrls] = useState([])
+  const navigate = useNavigate()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -81,7 +83,8 @@ export default function CreateJobPage() {
       }
   
       const responseData = await response.json();
-      console.log("Job created successfully:", responseData);
+      console.log("Job created successfully:", responseData);      
+      navigate("/"); // Navigate back to the homepage
     } catch (error) {
       console.error("Error creating job:", error);
     } finally {
@@ -149,15 +152,20 @@ export default function CreateJobPage() {
                   <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">
                     Category
                   </label>
-                  <input
-                      id="category"
-                      name="category"
-                      type="text"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      required
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
+                  <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Pools">Pools</option>
+                    <option value="Foliage">Foliage</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Pets">Pets</option>
+                  </select>
                 </div>
               </div>
 
