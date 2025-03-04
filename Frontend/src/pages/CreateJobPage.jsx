@@ -63,7 +63,7 @@ export default function CreateJobPage() {
     try {
       const jobData = {
         ...formData,
-        poster: "user-id",  // TODO: Replace with actual user ID when authentication is added
+        poster: "67c55279958b5f04cfd625a1",  // TODO: Replace with actual user ID when authentication is added
       };
   
       console.log("Sending job data to API:", jobData);

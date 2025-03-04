@@ -17,6 +17,24 @@ export const getAllJobs = async (req, res) => {
     }
 };
 
+export const getJobById = async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+
+    try {
+        const job = await Job.findById(id);
+        if (!job) {
+            return res.status(404).json({ success: false, message: 'Job not found' });
+        }
+        res.status(200).json({ success: true, data: job });
+    } catch (error) {
+        console.error("Error fetching job:", error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
 
 export const getJobsByCategory = async (req, res) => {
     const { category } = req.params; 

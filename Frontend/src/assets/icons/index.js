@@ -6,6 +6,7 @@ import facebook from './facebook.svg'
 import hamburger from './hamburger.svg'
 import instagram from './instagram.svg'
 import twitter from './twitter.svg'
+import trashcan from './trashcan.svg'
 
 export {
     arrowRight,
@@ -15,5 +16,6 @@ export {
     facebook,
     hamburger,
     instagram,
-    twitter
+    twitter,
+    trashcan
 }
