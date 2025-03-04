@@ -5,7 +5,7 @@ const JobCard = ({ category, title, location, price, images }) => {
   const imageUrl = images && images.length > 0 ? images[0] : PlaceHolderImage;
 
   return (
-    <div className="px-4 py-3 max-w-xs rounded-xl shadow-lg m-2">
+    <div className="px-4 bg-white py-3 max-w-xs rounded-xl shadow-lg m-2 transform transition-transform duration-300 hover:scale-105">
         <h2 className="font-montserrat font-bold text-neutral-900 text-xl mb-2 h-12 overflow-hidden">{title}</h2>
         <img className="w-full h-48 object-cover rounded-lg" src={imageUrl} alt="Job" />
         <p className="text-slate-gray font-montserrat text-base mt-4">{location}</p>
