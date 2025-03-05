@@ -84,6 +84,42 @@ const ProfilePage = () => {
     }
   };
 
+  const handleMarkJobAsDone = async (jobId) => {
+    try {
+      const response = await fetch(`/api/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'Closed' }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to mark job as done');
+      }
+
+      // Update user data
+      const userResponse = await fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          $pull: { progress: jobId },
+          $push: { completed: jobId },
+        }),
+      });
+      if (!userResponse.ok) {
+        throw new Error('Failed to update user data');
+      }
+
+      setInProgressJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      const completedJob = inProgressJobs.find((job) => job._id === jobId);
+      setCompletedJobs((prevJobs) => [...prevJobs, completedJob]);
+    } catch (error) {
+      console.error('Error marking job as done:', error);
+    }
+  };
+
   if (!userData) {
     return <div>Loading...</div>;
   }
@@ -148,6 +184,7 @@ const ProfilePage = () => {
                 location={job.location} 
                 price={job.price} 
                 images={job.images} 
+                onMarkAsDone={() => handleMarkJobAsDone(job._id)}
               />
             ))}
           </div>

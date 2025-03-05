@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { PlaceHolderImage } from "../assets/PlaceHolderImages";
 import { trashcan } from "../assets/icons";
 
-const JobCard = ({ id, category, title, location, price, images, onDelete }) => {
+const JobCard = ({ id, category, title, location, price, images, onDelete, onMarkAsDone }) => {
   const imageUrl = images && images.length > 0 ? images[0] : PlaceHolderImage;
 
   return (
@@ -23,6 +23,14 @@ const JobCard = ({ id, category, title, location, price, images, onDelete }) => 
                   className="bg-red-500 text-white px-3 py-2.5 rounded flex items-center justify-center hover:bg-red-700"
                 >
                   <img src={trashcan} alt="Delete" className="w-5 h-5" />
+                </button>
+              )}
+              {onMarkAsDone && (
+                <button
+                  onClick={onMarkAsDone}
+                  className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-700"
+                >
+                  Done
                 </button>
               )}
             </div>

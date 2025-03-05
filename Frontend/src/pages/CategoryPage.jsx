@@ -27,7 +27,8 @@ function CategoryPage() {
             .then((res) => res.json())
             .then((data) => {
                 console.log("API response:", data);
-                setJobs(Array.isArray(data.data) ? data.data : []);
+                const openJobs = Array.isArray(data.data) ? data.data.filter(job => job.status === "Open") : [];
+                setJobs(openJobs);
             })
             .catch((err) => console.error("Error fetching jobs:", err));
     }, [categoryName]);

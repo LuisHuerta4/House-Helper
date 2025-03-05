@@ -21,6 +21,30 @@ const JobInfoPage = () => {
     fetchJob();
   }, [id]);
 
+  const handleTakeJob = async () => {
+    try {
+      const userId = "67c55279958b5f04cfd625a1"; // Replace with actual user ID
+
+      // Update user data
+      const userResponse = await fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          $push: { progress: job._id },
+        }),
+      });
+      if (!userResponse.ok) {
+        throw new Error('Failed to update user data');
+      }
+
+      navigate('/');
+    } catch (error) {
+      console.error('Error taking job:', error);
+    }
+  };
+
   if (!job) {
     return <div className="text-center text-gray-500">Loading...</div>;
   }
@@ -52,7 +76,12 @@ const JobInfoPage = () => {
           <p className="font-montserrat text-lg font-semibold">Location: {job.location}</p>
           <p className="font-montserrat text-lg font-semibold text-green-600">Pay: ${job.price}</p>
         </div>
-        <button className="font-montserrat mt-4 bg-green-600 text-white px-6 py-2 w-full rounded-lg hover:bg-green-700">Take Job</button>
+        <button 
+          onClick={handleTakeJob}
+          className="font-montserrat mt-4 bg-green-600 text-white px-6 py-2 w-full rounded-lg hover:bg-green-700"
+        >
+          Take Job
+        </button>
       </div>
     </div>
   );
