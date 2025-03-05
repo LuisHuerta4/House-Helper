@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { chevronLeft } from '../assets/icons';
 import axios from 'axios';
 
 const JobInfoPage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [job, setJob] = useState(null);
 
@@ -26,6 +28,12 @@ const JobInfoPage = () => {
   return (
     <div className="flex items-center justify-center pb-32 min-h-screen bg-gray-100">
       <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+        <button 
+            onClick={() => navigate('/')} 
+            className="px-2 py-2 rounded-full"
+        >
+            <img src={chevronLeft} alt="Left Arrow" className="w-9 h-9" />
+        </button>
         <h1 className="text-3xl font-bold text-center mb-4">{job.title}</h1>
         <div className="flex flex-wrap justify-center gap-6 mb-6">
           {job.images.map((image, index) => (

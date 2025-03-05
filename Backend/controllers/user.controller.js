@@ -21,14 +21,14 @@ export const getUser = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-    const { name, listings, icon, bio, rating } = req.body;
+    const { name, completed, icon, bio, rating } = req.body;
 
-    if (!name || !listings || !icon || !bio || !rating) {
+    if (!name || !completed || !icon || !bio || !rating) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
     try {
-        const newUser = new User({ name, listings, icon, bio, rating });
+        const newUser = new User({ name, completed, icon, bio, rating });
         const savedUser = await newUser.save();
         res.status(201).json({ success: true, data: savedUser });
     } catch (error) {

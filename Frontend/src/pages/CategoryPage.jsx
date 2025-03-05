@@ -34,7 +34,7 @@ function CategoryPage() {
     
 
     return (
-        <div className="p-6 flex flex-col items-center">
+        <div className="p-6 flex flex-col items-center bg-gray-100">
             <nav className="flex-1 flex justify-center items-center gap-16 mb-3">
                 <Link to="/" className="font-montserrat leading-normal text-lg text-slate-gray">Home</Link>
                 <Link to="/profile" className="font-montserrat leading-normal text-lg text-slate-gray">Profile</Link>
