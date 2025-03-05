@@ -9,6 +9,7 @@ const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const [completedJobs, setCompletedJobs] = useState([]);
   const [postedJobs, setPostedJobs] = useState([]);
+  const [inProgressJobs, setInProgressJobs] = useState([]);
   const userId = "67c55279958b5f04cfd625a1"; // Replace with actual user ID
   
   useEffect(() => {
@@ -21,9 +22,9 @@ const ProfilePage = () => {
         const data = await response.json();
         setUserData(data.data);
   
-        // Fetch job details for each listing
+        // Fetch job details for each job completed
         const jobDetails = await Promise.all(
-          data.data.listings.map(async (jobId) => {
+          data.data.completed.map(async (jobId) => {
             const jobResponse = await fetch(`/api/jobs/${jobId}`);
             if (!jobResponse.ok) {
               throw new Error('Failed to fetch job data');
@@ -33,6 +34,19 @@ const ProfilePage = () => {
           })
         );
         setCompletedJobs(jobDetails);
+
+        // Fetch job details for each job in progress
+        const inProgressJobDetails = await Promise.all(
+          data.data.progress.map(async (jobId) => {
+            const jobResponse = await fetch(`/api/jobs/${jobId}`);
+            if (!jobResponse.ok) {
+              throw new Error('Failed to fetch job data');
+            }
+            const jobData = await jobResponse.json();
+            return jobData.data;
+          })
+        );
+        setInProgressJobs(inProgressJobDetails);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -67,6 +81,42 @@ const ProfilePage = () => {
       setPostedJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
     } catch (error) {
       console.error('Error deleting job:', error);
+    }
+  };
+
+  const handleMarkJobAsDone = async (jobId) => {
+    try {
+      const response = await fetch(`/api/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'Closed' }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to mark job as done');
+      }
+
+      // Update user data
+      const userResponse = await fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          $pull: { progress: jobId },
+          $push: { completed: jobId },
+        }),
+      });
+      if (!userResponse.ok) {
+        throw new Error('Failed to update user data');
+      }
+
+      setInProgressJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      const completedJob = inProgressJobs.find((job) => job._id === jobId);
+      setCompletedJobs((prevJobs) => [...prevJobs, completedJob]);
+    } catch (error) {
+      console.error('Error marking job as done:', error);
     }
   };
 
@@ -110,11 +160,31 @@ const ProfilePage = () => {
             {completedJobs.map((job) => (
               <JobCard 
                 key={job._id} 
+                id={job._id}
                 category={job.category} 
                 title={job.title} 
                 location={job.location} 
                 price={job.price} 
                 images={job.images} 
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* In Progress Jobs Section */}
+        <div className="mt-8">
+          <div className="font-montserrat px-4 py-2 text-center rounded-md text-xl font-semibold">In Progress Jobs</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            {inProgressJobs.map((job) => (
+              <JobCard 
+                key={job._id} 
+                id={job._id}
+                category={job.category} 
+                title={job.title} 
+                location={job.location} 
+                price={job.price} 
+                images={job.images} 
+                onMarkAsDone={() => handleMarkJobAsDone(job._id)}
               />
             ))}
           </div>
@@ -127,6 +197,7 @@ const ProfilePage = () => {
             {postedJobs.map((job) => (
               <JobCard 
                 key={job._id} 
+                id={job._id}
                 category={job.category} 
                 title={job.title} 
                 location={job.location} 

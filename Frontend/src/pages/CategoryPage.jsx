@@ -27,14 +27,15 @@ function CategoryPage() {
             .then((res) => res.json())
             .then((data) => {
                 console.log("API response:", data);
-                setJobs(Array.isArray(data.data) ? data.data : []);
+                const openJobs = Array.isArray(data.data) ? data.data.filter(job => job.status === "Open") : [];
+                setJobs(openJobs);
             })
             .catch((err) => console.error("Error fetching jobs:", err));
     }, [categoryName]);
     
 
     return (
-        <div className="p-6 flex flex-col items-center">
+        <div className="p-6 flex flex-col items-center bg-gray-100">
             <nav className="flex-1 flex justify-center items-center gap-16 mb-3">
                 <Link to="/" className="font-montserrat leading-normal text-lg text-slate-gray">Home</Link>
                 <Link to="/profile" className="font-montserrat leading-normal text-lg text-slate-gray">Profile</Link>
@@ -51,6 +52,7 @@ function CategoryPage() {
                     {jobs.map((job) => (
                         <JobCard 
                             key={job._id} 
+                            id={job._id}
                             category={categoryName} 
                             title={job.title} 
                             description={job.description} 

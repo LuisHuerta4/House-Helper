@@ -21,14 +21,14 @@ export const getUser = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-    const { name, listings, icon, bio, rating } = req.body;
+    const { name, completed, icon, bio, rating } = req.body;
 
-    if (!name || !listings || !icon || !bio || !rating) {
+    if (!name || !completed || !icon || !bio || !rating) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
     try {
-        const newUser = new User({ name, listings, icon, bio, rating });
+        const newUser = new User({ name, completed, icon, bio, rating });
         const savedUser = await newUser.save();
         res.status(201).json({ success: true, data: savedUser });
     } catch (error) {
@@ -39,14 +39,14 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const { id } = req.params;
-    const user = req.body;
+    const update = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     try {
-        const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(id, update, { new: true });
         res.status(200).json({ success: true, data: updatedUser });
     } catch (error) {
         console.error("Error updating user:", error);

@@ -5,9 +5,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    listings: [{ // ID's of jobs user has posted
+    completed: [{ // ID's of jobs user has completed
         type: String,
-        required: true, 
+        required: false, 
+    }],
+    progress: [{ // ID's of jobs user has in progress
+        type: String,
+        required: false, 
     }],
     icon: {
         type: String,
