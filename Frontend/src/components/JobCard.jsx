@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import { PlaceHolderImage } from "../assets/PlaceHolderImages";
 import { trashcan } from "../assets/icons";
 
-const JobCard = ({ category, title, location, price, images, onDelete }) => {
+const JobCard = ({ id, category, title, location, price, images, onDelete }) => {
   const imageUrl = images && images.length > 0 ? images[0] : PlaceHolderImage;
 
   return (
@@ -13,7 +14,9 @@ const JobCard = ({ category, title, location, price, images, onDelete }) => {
         <div className="flex justify-between items-center mt-2">
             <p className="text-green-600 font-montserrat">Pay: ${price}</p>
             <div className="flex space-x-2">
-              <button className="bg-green-600 font-montserrat text-white px-3 py-2 rounded hover:bg-green-700">Info</button>
+              <Link to={`/jobInfo/${id}`}>
+                <button className="bg-green-600 font-montserrat text-white px-3 py-2 rounded hover:bg-green-700">Info</button>
+              </Link>
               {onDelete && (
                 <button
                   onClick={onDelete}

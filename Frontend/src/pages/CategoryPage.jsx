@@ -51,6 +51,7 @@ function CategoryPage() {
                     {jobs.map((job) => (
                         <JobCard 
                             key={job._id} 
+                            id={job._id}
                             category={categoryName} 
                             title={job.title} 
                             description={job.description} 
